@@ -1,4 +1,4 @@
-All content shared on this site, including but not limited to Ansible Playbooks and Terraform Configurations, is provided as a courtesy.
+All content shared on this site, including but not limited to Ansible Playbooks and Terraform Configurations, is provided as a courtesy.\n
 Contributors to this site cannot lay claim of ownership to any content, the same applies to users.
 Contributions are intended to serve as examples that can be used in whole or part.
 Although not prohibited, these examples are shared with the expectations that they will not be sold or packaged for resale.
