@@ -1,0 +1,16 @@
+---
+- hosts: localhost
+  gather_facts: false
+  collections:
+  - netapp.ontap
+  tasks:
+  - name: Create iscsi service
+    na_ontap_iscsi:
+      state: present
+      service_state: started
+      vserver: "{{ vserver }}"
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      https: true
+      validate_certs: false

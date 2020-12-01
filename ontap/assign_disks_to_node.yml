@@ -1,0 +1,16 @@
+---
+- hosts: localhost
+  name: Setup ONTAP
+  gather_facts: false
+  collections:
+  - netapp.ontap
+  tasks:
+  - name: Assign unowned disks
+    na_ontap_disks:
+      node: "{{ node }}"
+      disk_count: "{{ count }}"
+      https: true
+      validate_certs: false
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"

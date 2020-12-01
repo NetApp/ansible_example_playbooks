@@ -1,0 +1,25 @@
+---
+- hosts: localhost
+  name: Setup ONTAP
+  gather_facts: false
+  collections:
+  - netapp.ontap
+  tasks:
+  - name: Create Aggrs
+    na_ontap_aggregate:
+      state: "{{ state }}"
+      name: "{{ item.name }}"
+      nodes: "{{ item.node }}"
+      disk_count: 26
+      raid_size: 26
+      #disk_type: FCAL
+      https: true
+      validate_certs: false
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+    with_items:
+      - { name: "aggr1", node: "vsim-01" }
+      - { name: "aggr2", node: "vsim-01" }
+      - { name: "aggr3", node: "vsim-02" }
+      - { name: "aggr4", node: "vsim-02" }

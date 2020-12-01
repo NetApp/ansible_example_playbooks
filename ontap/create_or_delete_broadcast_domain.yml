@@ -1,0 +1,19 @@
+---
+- hosts: localhost
+  name: Setup ONTAP
+  gather_facts: false
+  collections:
+  - netapp.ontap
+  tasks:
+  - name: Create bcast
+    na_ontap_broadcast_domain:
+      state: "{{ state }}"
+      broadcast_domain: demo
+      mtu: 9000
+      ipspace: Default
+      ports: vsim-01:a0a,vsim-01:a0a-100,vsim-02:a0a,vsim-02:a0a-100
+      https: true
+      validate_certs: false
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"

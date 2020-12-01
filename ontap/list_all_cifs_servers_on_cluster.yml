@@ -1,0 +1,20 @@
+---
+- hosts: localhost
+  name: Setup ONTAP
+  gather_facts: false
+  collections:
+  - netapp.ontap
+  tasks:
+  - name: Gather facts
+    na_ontap_info:
+      state: info
+      gather_subset: cifs_server_info
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      https: true
+      validate_certs: false
+    register: ontap_info
+  - debug:
+      msg: "{{ item }}"
+    with_items: "{{ ontap_info.ontap_info.cifs_server_info }}"

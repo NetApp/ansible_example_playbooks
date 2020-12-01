@@ -1,0 +1,21 @@
+---
+- hosts: localhost
+  name: Setup ONTAP
+  gather_facts: false
+  collections:
+  - netapp.ontap
+  tasks:
+  - name: Enable autosupport
+    na_ontap_autosupport:
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      https: "{{ https }}"
+      validate_certs: "{{ validate_certs }}"
+      state: present
+      node_name: "{{ node_name }}"
+      transport: https
+      noteto: "{{ recipients_emails }}"
+      mail_hosts: "{{ mail_servers }}"
+      support: False
+      post_url: "url/1.0/post"

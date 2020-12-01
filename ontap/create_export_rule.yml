@@ -1,0 +1,21 @@
+---
+- hosts: localhost
+  name: Setup ONTAP
+  gather_facts: false
+  collections:
+  - netapp.ontap
+  tasks:
+  - name: Setup rules
+    na_ontap_export_policy_rule:
+      state: present
+      name: "{{ policy }}"
+      vserver: "{{ vserver }}"
+      client_match: "{{ client_match }}"
+      ro_rule: "{{ ro_rule }}"
+      rw_rule: "{{ rw_rule }}"
+      super_user_security: "{{ su_rule }}"
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      https: true
+      validate_certs: false

@@ -1,0 +1,24 @@
+---
+- hosts: localhost
+  name: Setup ONTAP
+  gather_facts: false
+  collections:
+  - netapp.ontap
+  tasks:
+  - name: Create interface for vserver 
+    na_ontap_interface:
+      state: present
+      interface_name: "{{ lif_name }}"
+      home_port: "{{ port }}"
+      home_node: "{{ node }}"
+      role: "data"
+      admin_status: up
+      is_auto_revert: true
+      address: "{{ address }}"
+      netmask: "{{ netmask }}"
+      vserver: "{{ vserver }}"
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      https: true
+      validate_certs: false
