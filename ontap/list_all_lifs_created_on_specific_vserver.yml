@@ -1,0 +1,21 @@
+---
+- hosts: localhost
+  name: Setup ONTAP
+  gather_facts: false
+  collections:
+  - netapp.ontap
+  tasks:
+  - name: Gather facts
+    na_ontap_info:
+      state: info
+      gather_subset: net_interface_info
+      vserver: "{{ vserver }}"
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      https: true
+      validate_certs: false
+    register: ontap_info
+  - debug:
+      msg: "{{ ontap_info.ontap_info.net_interface_info[item] }}"
+    with_items: "{{ ontap_info.ontap_info.net_interface_info }}"
