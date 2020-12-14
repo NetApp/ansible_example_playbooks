@@ -3,18 +3,18 @@
   name: Setup ONTAP
   gather_facts: false
   collections:
-  - netapp.ontap
+   - netapp.ontap
   tasks:
   - name: Gather facts
     na_ontap_info:
       state: info
-      gather_subset: cifs_server_info
+      gather_subset: cluster_node_info
       hostname: "{{ hostname }}"
       username: "{{ username }}"
       password: "{{ password }}"
       https: true
       validate_certs: false
     register: ontap_info
-  - debug:
+  - debug: 
       msg: "{{ item }}"
-    loop: "{{ ontap_info.ontap_info.cifs_server_info|list }}"
+    loop: "{{ ontap_info.ontap_info.cluster_node_info|list }}"
