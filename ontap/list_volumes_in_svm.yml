@@ -1,0 +1,21 @@
+---
+- hosts: localhost
+  name: Setup ONTAP
+  gather_facts: false
+  collections:
+    - netapp.ontap
+  tasks:
+  - name: Gather facts
+    na_ontap_info:
+      state: info
+      gather_subset: volume_info
+      hostname: "{{ hostname }}"
+      vserver: "{{ vserver }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      https: true 
+      validate_certs: false
+    register: netapp_info
+  - debug: 
+      msg: "{{ netapp_info.ontap_info.volume_info[item].volume_id_attributes.name }}"
+    loop: "{{ netapp_info.ontap_info.volume_info|list }}"

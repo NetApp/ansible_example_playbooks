@@ -1,0 +1,36 @@
+---
+- hosts: localhost
+  name: Setup ONTAP
+  collections:
+    - netapp.ontap
+  tasks:
+  - name: Create volume
+    na_ontap_volume:
+      state: present
+      name: "{{ volname }}"
+      aggregate_name: "{{ aggr }}"
+      size: "{{ size }}" 
+      size_unit: gb
+      junction_path: "/{{ volname }}"
+      space_guarantee: "none"
+      vserver: "{{ vserver }}"
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      https: true
+      validate_certs: false
+  - name: Create LUN
+    na_ontap_lun:
+      state: "{{ state }}"
+      vserver: "{{ vserver }}"
+      name: "{{ volname }}_01"
+      flexvol_name: "{{ volname }}"
+      size: "{{ size }}"
+      size_unit: gb
+      ostype: "{{ ostype }}"
+      space_reserve: False
+      https: true
+      validate_certs: false
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"  
