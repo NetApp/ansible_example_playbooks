@@ -3,13 +3,6 @@
   collections:
     - netapp.ontap
   gather_facts: false
-  vars:
-    login: &login
-      hostname: "{{ hostname }}"
-      username: "{{ username }}"
-      password: "{{ password }}"
-      https: true
-      validate_certs: false
   name: Loop of volume creation
   tasks:
   - name:  Create Volumes
@@ -20,7 +13,11 @@
       size_unit: "{{ item.volume_size_unit }}"
       vserver: "{{ item.vserver }}"
       aggregate_name: "{{ item.aggregate_name }}"
-      <<: *login
+      hostname: "{{ hostname }}"
+      username: "{{ netapp_username }}"
+      password: "{{ netapp_password }}"
+      https: true
+      validate_certs: false
     loop:
       - { volume: 'volume1', volume_size: '10', volume_size_unit: 'mb', vserver: 'vserver_name', aggregate_name: 'aggr1' }
       - { volume: 'volume2', volume_size: '20', volume_size_unit: 'mb', vserver: 'vserver_name', aggregate_name: 'aggr2' }
