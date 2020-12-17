@@ -1,0 +1,26 @@
+---
+- hosts: localhost
+  collections:
+    - netapp.ontap
+  gather_facts: false
+  name: Loop of volume creation
+  tasks:
+  - name:  Create Volumes
+    na_ontap_volume:
+      state: present
+      name: "{{ item.volume }}"
+      size: "{{ item.volume_size }}"
+      size_unit: "{{ item.volume_size_unit }}"
+      vserver: "{{ item.vserver }}"
+      aggregate_name: "{{ item.aggregate_name }}"
+      hostname: "{{ hostname }}"
+      username: "{{ netapp_username }}"
+      password: "{{ netapp_password }}"
+      https: true
+      validate_certs: false
+    loop:
+      - { volume: 'volume1', volume_size: '10', volume_size_unit: 'mb', vserver: 'vserver_name', aggregate_name: 'aggr1' }
+      - { volume: 'volume2', volume_size: '20', volume_size_unit: 'mb', vserver: 'vserver_name', aggregate_name: 'aggr2' }
+      - { volume: 'volume3', volume_size: '30', volume_size_unit: 'mb', vserver: 'vserver_name', aggregate_name: 'aggr1' }
+      - { volume: 'volume4', volume_size: '40', volume_size_unit: 'mb', vserver: 'vserver_name', aggregate_name: 'aggr2' }
+      - { volume: 'volume5', volume_size: '50', volume_size_unit: 'mb', vserver: 'vserver_name', aggregate_name: 'aggr1' }
