@@ -1,0 +1,23 @@
+---
+- hosts: localhost
+  name: Setup ONTAP
+  gather_facts: false
+  collections:
+    - netapp.ontap
+  tasks:
+  - name: Gather aggregate facts
+    na_ontap_info:
+      gather_subset: aggregate_info
+      hostname: "{{ hostname }}"
+      query:
+        aggregate-attributes:
+          name: '"{{ aggr }}"'
+      username: "{{ username }}"
+      password: "{{ password }}"
+      https: "{{ https }}"
+      validate_certs: "{{ validate_certs }}"
+    register: netapp_info
+  - set_fact:
+      aggr_free: "{{ netapp_info.ontap_info.aggregate_info[aggr].aggr_space_attributes.size_available | int / 1024 / 1024 / 1024 }}"
+  - debug:
+      msg: "{{ aggr_free }}"
