@@ -1,0 +1,33 @@
+---
+- hosts: localhost
+  name: Setup ONTAP
+  gather_facts: false
+  collections:
+    - netapp.ontap
+  vars_files:
+    cred.yml
+  vars:
+    state: present
+    volname: vol1
+    vserver: ansible_vserver
+  tasks:
+  - name: Gather facts
+    na_ontap_info:
+      state: info
+      gather_subset: volume_info
+      hostname: "{{ hostname }}"
+      vserver: "{{ vserver }}"
+      query:
+        volume-attributes:
+          volume-id-attributes:
+            name: '"{{ volname }}"'
+      username: "{{ username }}"
+      password: "{{ password }}"
+      https: "{{ https }}"
+      validate_certs: "{{ validate_certs }}"
+    register: netapp_info
+  - set_fact: 
+      policy: "{{ netapp_info.ontap_info.volume_info[item].volume_export_attributes.policy }}"
+    with_items: "{{ netapp_info.ontap_info.volume_info }}"
+  - debug:
+      msg: "{{ policy }}"
