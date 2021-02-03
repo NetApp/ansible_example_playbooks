@@ -1,0 +1,20 @@
+---
+- hosts: localhost
+  name: Setup ONTAP
+  gather_facts: false
+  collections:
+    - netapp.ontap
+  tasks:
+  - name: Gather aggregate facts
+    na_ontap_info:
+      gather_subset: aggregate_info
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      https: "{{ https }}"
+      validate_certs: "{{ validate_certs }}"
+    register: netapp_info
+  - debug:
+      msg: "{{ item }} is on {{ netapp_info.ontap_info.aggregate_info[item].aggr_ownership_attributes.home_name }}"
+    with_items: "{{ netapp_info.ontap_info.aggregate_info }}"
+    when: netapp_info.ontap_info.aggregate_info[item].aggr_raid_attributes.is_root_aggregate == 'true'
