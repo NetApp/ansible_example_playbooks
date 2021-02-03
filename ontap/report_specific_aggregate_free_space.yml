@@ -10,8 +10,8 @@
       gather_subset: aggregate_info
       hostname: "{{ hostname }}"
       query:
-        aggregate-attributes:
-          name: '"{{ aggr }}"'
+        aggr-attributes:
+          aggregate-name: '"{{ aggr }}"'
       username: "{{ username }}"
       password: "{{ password }}"
       https: "{{ https }}"
