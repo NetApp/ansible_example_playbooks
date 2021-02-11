@@ -18,21 +18,25 @@
   - set_fact:
       cluster_name: "{{ item }}"
     with_items: "{{ netapp_info.ontap_info.cluster_identity_info }}"
+    no_log: True
   - set_fact:
       good_policy: true
     with_items: "{{ netapp_info.ontap_info.snapshot_policy_info }}"
     when:
     - netapp_info.ontap_info.snapshot_policy_info[item].vserver_name == vserver or netapp_info.ontap_info.snapshot_policy_info[item].vserver_name == cluster_name
     - netapp_info.ontap_info.snapshot_policy_info[item].policy == snap_policy
-    no_log: true
+    no_log: True
   - debug:
       msg: "No policy with that name"
-    when:
+    when: good_policy is not defined
   - debug: 
       msg: "{{ netapp_info.ontap_info.snapshot_policy_info[item].policy }}"
     with_items: "{{ netapp_info.ontap_info.snapshot_policy_info }}"
-    when:  
+    when:
+    -  good_policy is not defined
     - netapp_info.ontap_info.snapshot_policy_info[item].vserver_name == vserver or netapp_info.ontap_info.snapshot_policy_info[item].vserver_name == cluster_name
   - meta: end_play
     when:
     - good_policy is not defined
+  - debug:
+      msg: "{{ snap_policy }} is a good policy"
