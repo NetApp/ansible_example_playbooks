@@ -1,0 +1,38 @@
+---
+- hosts: localhost
+  name: Setup ONTAP
+  collections:
+   - netapp.ontap
+  vars:
+    state: present
+  tasks:
+  - name: Gather facts
+    na_ontap_info:
+      gather_subset: snapshot_policy_info,cluster_identity_info
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      https: "{{ https }}"
+      validate_certs: "{{ validate_certs }}"
+    register: netapp_info
+  - set_fact:
+      cluster_name: "{{ item }}"
+    with_items: "{{ netapp_info.ontap_info.cluster_identity_info }}"
+  - set_fact:
+      good_policy: true
+    with_items: "{{ netapp_info.ontap_info.snapshot_policy_info }}"
+    when:
+    - netapp_info.ontap_info.snapshot_policy_info[item].vserver_name == vserver or netapp_info.ontap_info.snapshot_policy_info[item].vserver_name == cluster_name
+    - netapp_info.ontap_info.snapshot_policy_info[item].policy == snap_policy
+    no_log: true
+  - debug:
+      msg: "No policy with that name"
+    when:
+  - meta: end_play
+    when:
+    - good_policy is not defined
+  - debug: 
+      msg: "{{ netapp_info.ontap_info.snapshot_policy_info[item].policy }}"
+    with_items: "{{ netapp_info.ontap_info.snapshot_policy_info }}"
+    when:  
+    - netapp_info.ontap_info.snapshot_policy_info[item].vserver_name == vserver or netapp_info.ontap_info.snapshot_policy_info[item].vserver_name == cluster_name
