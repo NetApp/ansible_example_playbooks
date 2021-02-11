@@ -28,11 +28,11 @@
   - debug:
       msg: "No policy with that name"
     when:
-  - meta: end_play
-    when:
-    - good_policy is not defined
   - debug: 
       msg: "{{ netapp_info.ontap_info.snapshot_policy_info[item].policy }}"
     with_items: "{{ netapp_info.ontap_info.snapshot_policy_info }}"
     when:  
     - netapp_info.ontap_info.snapshot_policy_info[item].vserver_name == vserver or netapp_info.ontap_info.snapshot_policy_info[item].vserver_name == cluster_name
+  - meta: end_play
+    when:
+    - good_policy is not defined
