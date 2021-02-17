@@ -1,0 +1,29 @@
+---
+- hosts: localhost
+  name: Select Aggregate
+  gather_facts: false
+  collections:
+    - netapp.ontap
+  tasks:
+  - name: Gather aggregate facts
+    na_ontap_info:
+      gather_subset: aggregate_info
+      hostname: "{{ hostname }}"
+      query:
+        aggr-attributes:
+          aggr-raid-attributes:
+            aggregate-type: "{{ aggr_type }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      https: "{{ https }}"
+      validate_certs: "{{ validate_certs }}"
+    register: netapp_info
+  - set_fact:
+      aggr_name: "{{ item }}"
+    with_items: "{{ netapp_info.ontap_info.aggregate_info }}"
+    when: 
+    - aggr_name is not defined
+    - "{{ netapp_info.ontap_info.aggregate_info[item].aggr_space_attributes.size_available | int / 1024 / 1024 / 1024 }}  > {{ size }}"
+    - netapp_info.ontap_info.aggregate_info[item].aggr_space_attributes.percent_used_capacity < used_cap
+  - debug:
+      msg: "{{ aggr_name }}"
