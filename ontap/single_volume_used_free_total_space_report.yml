@@ -1,0 +1,29 @@
+---
+- hosts: localhost
+  name: Setup ONTAP
+  gather_facts: false
+  collections:
+    - netapp.ontap
+  tasks:
+  - name: Gather facts
+    na_ontap_info:
+      state: info
+      gather_subset: volume_info
+      hostname: "{{ hostname }}"
+      vserver: "{{ vserver }}"
+      query:
+        volume-attributes:
+          volume-id-attributes:
+            name: '"{{ volname }}"'
+      username: "{{ username }}"
+      password: "{{ password }}"
+      https: "{{ https }}"
+      validate_certs: "{{ validate_certs }}"
+    register: netapp_info
+  - set_fact:
+      used_space: "{{ (netapp_info.ontap_info.volume_info[item].volume_space_attributes.size_used | int / 1024 / 1024 / 1024) | round }}"
+      free_space: "{{ (netapp_info.ontap_info.volume_info[item].volume_space_attributes.size_available | int / 1024 / 1024 / 1024) | round }}"
+      total_space: "{{ (netapp_info.ontap_info.volume_info[item].volume_space_attributes.size_total | int / 1024 / 1024 / 1024) | round }}"
+    with_items: "{{ netapp_info.ontap_info.volume_info }}"
+  - debug: 
+      msg: "{{ used_space }}:{{ free_space }}:{{ total_space}}"
